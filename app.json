@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "weather-app-react-native",
-    "slug": "weather-app-react-native",
+    "slug": "weatherapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,6 +27,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f13651e0-0070-4ccf-b48c-e8888e061ed1"
+      }
+    },
+    "owner": "think-tank"
   }
 }
