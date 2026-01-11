@@ -1,0 +1,18 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "jsx": "react-native",
+    "allowJs": true,
+    "types": ["react-native", "styled-components-react-native", "jest"]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "env.d.ts"
+  ],
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js"]
+}

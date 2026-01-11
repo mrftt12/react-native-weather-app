@@ -1,8 +1,18 @@
 import React from "react";
-import { View, Text, TextInput } from "react-native";
 import styled from "styled-components/native";
 
-const ForecastSearch = ({
+type ForecastSearchProps = {
+  toggleSearch: "city" | "postal";
+  setToggleSearch: (value: "city" | "postal") => void;
+  city: string;
+  setCity: (value: string) => void;
+  fetchLatLongHandler: () => void;
+  fetchByPostalHandler: () => void;
+  setPostalCode: (value: string) => void;
+  postalCode: string;
+};
+
+const ForecastSearch: React.FC<ForecastSearchProps> = ({
   toggleSearch,
   setToggleSearch,
   city,
@@ -12,7 +22,7 @@ const ForecastSearch = ({
   setPostalCode,
   postalCode,
 }) => {
-  const handleSubmit = (e) => {
+  const handleSubmit = () => {
     if (toggleSearch === "city") {
       fetchLatLongHandler();
     }
@@ -21,39 +31,34 @@ const ForecastSearch = ({
     }
   };
 
-  const setToggleByCity = () => {
-    setToggleSearch("city");
-  };
-
-  const setToggleByPostal = () => {
-    setToggleSearch("postal");
-  };
-
   return (
     <Container>
       <SearchBy>
         <ButtonLabel>Search By</ButtonLabel>
-        <Buttons
-          title="City"
-          color={toggleSearch === "city" ? "white" : "rgba(255, 255, 255, 0.6)"}
+        <OptionButton
           accessibilityLabel="Search Weather By City"
-          onPress={setToggleByCity}
-        />
-        <Buttons
-          title="Postal Code/Zip"
-          color={toggleSearch === "city" ? "rgba(255, 255, 255, 0.6)" : "white"}
+          onPress={() => setToggleSearch("city")}
+          $active={toggleSearch === "city"}
+        >
+          <OptionText>City</OptionText>
+        </OptionButton>
+        <OptionButton
           accessibilityLabel="Search Weather By ZIP/Postal Code"
-          onPress={setToggleByPostal}
-        />
+          onPress={() => setToggleSearch("postal")}
+          $active={toggleSearch === "postal"}
+        >
+          <OptionText>Postal Code/Zip</OptionText>
+        </OptionButton>
       </SearchBy>
 
-      <SearchCity
+      <SearchInput
         onChangeText={toggleSearch === "city" ? setCity : setPostalCode}
         value={toggleSearch === "city" ? city : postalCode}
         placeholder={
           toggleSearch === "city" ? "Search By City" : "Search By Postal Code"
         }
         onSubmitEditing={handleSubmit}
+        placeholderTextColor="rgba(0,0,0,0.5)"
       />
     </Container>
   );
@@ -64,11 +69,6 @@ const Container = styled.View`
   justify-content: center;
   align-items: center;
   margin-top: 35px;
-`;
-
-const Buttons = styled.Button`
-  color: black;
-  background-color: gray;
 `;
 
 const SearchBy = styled.View`
@@ -87,7 +87,21 @@ const ButtonLabel = styled.Text`
   margin-right: 10px;
 `;
 
-const SearchCity = styled.TextInput`
+const OptionButton = styled.Pressable<{ $active: boolean }>`
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: ${(props) =>
+    props.$active ? "white" : "rgba(255, 255, 255, 0.2)"};
+  margin-right: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+`;
+
+const OptionText = styled.Text`
+  color: #1f2933;
+  font-weight: 600;
+`;
+
+const SearchInput = styled.TextInput`
   height: 50px;
   margin: 12px;
   background-color: white;

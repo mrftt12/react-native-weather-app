@@ -1,54 +1,69 @@
 import React from "react";
 import styled from "styled-components/native";
+import {
+  codeToEmoji,
+  weatherCodeDescription,
+} from "../types/weather";
 
-const CurrentForecast = ({ currentWeather }) => {
+type CurrentForecastProps = {
+  currentWeather: {
+    timezone?: string;
+    current?: {
+      temp: number;
+      effective_temp: number;
+      feels_like: number;
+      humidity: number;
+      wind_speed: number;
+      weather_code: number;
+    };
+    daily?: Array<{
+      temp_min: number;
+      temp_max: number;
+      precipitation_sum?: number;
+    }>;
+  };
+};
+
+const CurrentForecast: React.FC<CurrentForecastProps> = ({ currentWeather }) => {
   return (
     <CurrentView>
       <Timezone>{currentWeather.timezone}</Timezone>
       <MainInfoContainer>
         <CurrentTempView>
-          {currentWeather.current && (
-            <WeatherIcon
-              source={{
-                uri: `http://openweathermap.org/img/wn/${currentWeather.current.weather[0].icon}@2x.png`,
-              }}
-              resizeMode={"contain"}
-            />
-          )}
+          <WeatherEmoji>
+            {codeToEmoji[currentWeather.current?.weather_code ?? 0] ?? "🌡"}
+          </WeatherEmoji>
           <CurrentDegrees>
-            {Math.round(currentWeather.current && currentWeather.current.temp)}
-            °C
+            {Math.round(currentWeather.current?.temp ?? 0)}
+            °F
           </CurrentDegrees>
         </CurrentTempView>
         <Description>
-          {currentWeather.current &&
-            currentWeather.current.weather[0].description}
+          {weatherCodeDescription[currentWeather.current?.weather_code ?? 0] ??
+            ""}
         </Description>
       </MainInfoContainer>
       <SecondaryInfoContainer>
         <Row>
           <DetailsBox>
-            <Label>Feels</Label>
+            <Label>E.T.</Label>
             <Details>
-              {currentWeather.current &&
-                Math.round(currentWeather.current.feels_like)}
-              °C
+              {Math.round(currentWeather.current?.effective_temp ?? 0)}
+              °F
             </Details>
           </DetailsBox>
           <DetailsBox>
             <Label>Low</Label>
             <Details>
-              {currentWeather.daily &&
-                Math.round(currentWeather.daily[0].temp.min)}
-              °C
+              {Math.round(currentWeather.daily?.[0]?.temp_min ?? 0)}
+              °F
             </Details>
           </DetailsBox>
           <DetailsBox>
             <Label>High</Label>
             <Details>
-              {currentWeather.daily &&
-                Math.round(currentWeather.daily[0].temp.max)}
-              °C
+              {Math.round(currentWeather.daily?.[0]?.temp_max ?? 0)}
+              °F
             </Details>
           </DetailsBox>
         </Row>
@@ -56,19 +71,19 @@ const CurrentForecast = ({ currentWeather }) => {
           <DetailsBox>
             <Label>Wind</Label>
             <Details>
-              {currentWeather.current && currentWeather.current.wind_speed} m/s
+              {(currentWeather.current?.wind_speed ?? 0).toFixed(1)} mph
             </Details>
           </DetailsBox>
           <DetailsBox>
             <Label>Humidity</Label>
             <Details>
-              {currentWeather.current && currentWeather.current.humidity}%
+              {currentWeather.current?.humidity ?? 0}%
             </Details>
           </DetailsBox>
           <DetailsBox>
             <Label>Rain</Label>
             <Details>
-              {currentWeather.daily > 0 ? currentWeather.daily[0].rain : "0"} MM
+              {currentWeather.daily?.[0]?.precipitation_sum ?? 0} in
             </Details>
           </DetailsBox>
         </Row>
@@ -113,9 +128,9 @@ const SecondaryInfoContainer = styled.View`
   max-width: 478px;
 `;
 
-const WeatherIcon = styled.Image`
-  width: 50px;
-  height: 50px;
+const WeatherEmoji = styled.Text`
+  font-size: 44px;
+  margin-right: 10px;
 `;
 
 const Timezone = styled.Text`
